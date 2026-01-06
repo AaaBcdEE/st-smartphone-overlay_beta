@@ -1,0 +1,456 @@
+<div id="st-phone-overlay" class="phone-hidden">
+    <div class="phone-bezel">
+        <div id="phone-screen" class="phone-screen">
+
+            <!-- 상태바 -->
+            <div class="phone-status-bar">
+                <span id="phone-clock">12:00</span>
+                <div style="width: 120px; height: 35px; background: #000; border-radius: 20px; position:absolute; left:50%; transform:translateX(-50%); top:-5px; z-index:200;"></div>
+                <span style="font-size:13px; display:flex; gap:6px;">
+                    <i class="fa-solid fa-signal"></i>
+                    <i class="fa-solid fa-wifi"></i>
+                    <i class="fa-solid fa-battery-full"></i>
+                </span>
+            </div>
+
+            <!-- 앱: 홈 -->
+            <div id="app-home" class="phone-app active">
+                    <!-- 앱 아이콘 그리드 -->
+            <!-- ▼▼▼ [수정된 아이콘 그리드] 글자 태그를 완전히 삭제한 버전 ▼▼▼ -->
+    <div class="app-grid">
+        <!-- 1. 전화 (Phone) -->
+        <div class="app-icon" onclick="openApp('phone')">
+            <div class="icon-bg phone-app-bg">
+                <i class="fa-solid fa-phone"></i>
+            </div>
+        </div>
+
+        <!-- 2. 연락처 (Contacts) -->
+        <div class="app-icon" onclick="openApp('contacts')">
+            <div class="icon-bg contacts-bg">
+                <i class="fa-solid fa-address-book"></i>
+            </div>
+        </div>
+
+        <!-- 3. 메시지 (Messages) -->
+        <div class="app-icon" onclick="openApp('message-list')">
+            <div class="icon-bg message-bg">
+                <i class="fa-solid fa-comment"></i>
+            </div>
+            <!-- ★중요★ 알림 뱃지는 기능을 위해 남겨둠 (글자는 아님) -->
+            <div id="badge-messages" class="app-notification-badge hidden">0</div>
+        </div>
+
+        <!-- 4. 카메라 (Camera) -->
+        <div class="app-icon" onclick="openApp('camera')">
+            <div class="icon-bg camera-bg">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+        </div>
+
+        <!-- 5. 앨범 (Album) -->
+        <div class="app-icon" onclick="openApp('album')">
+            <div class="icon-bg album-bg">
+                <i class="fa-solid fa-images"></i>
+            </div>
+        </div>
+
+        <!-- 6. 설정 (Settings) -->
+        <div class="app-icon" onclick="openApp('settings')">
+            <div class="icon-bg settings-bg">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+        </div>
+    </div>
+    <!-- ▲▲▲ [여기까지 복사] ▲▲▲ -->
+
+
+            </div>
+
+            <!-- 앱: 카메라 -->
+            <div id="app-camera" class="phone-app">
+                <div class="camera-header" style="background:transparent; border:none; position:absolute; top:0; z-index:10; width:100%;">
+                    <button class="back-btn" onclick="goHome()" style="color:white; text-shadow:0 1px 3px black;"><i class="fa-solid fa-chevron-left"></i></button>
+                </div>
+                <div class="camera-viewport">
+                    <div id="camera-loading" style="display:none; text-align:center; color:white;">
+                        <i class="fa-solid fa-spinner fa-spin fa-2x"></i>
+                    </div>
+                    <img id="camera-preview" src="" style="width:100%; height:100%; object-fit:contain; display:none;">
+                </div>
+                <div class="camera-controls">
+				            <!-- [추가됨] 유저 포함 여부 체크박스 -->
+            <div style="width:100%; display:flex; justify-content:center; gap:10px; margin-bottom:10px;">
+                <label style="color:var(--ph-text-color); font-size:13px; display:flex; align-items:center; cursor:pointer;">
+                    <input type="checkbox" id="camera-selfie-mode" style="transform:scale(1.2); margin-right:6px;">
+                    Include Me (User)
+                </label>
+            </div>
+
+                    <input type="text" id="camera-prompt" placeholder="프롬프트 입력..." autocomplete="off">
+                    <button id="shutter-btn" class="shutter-btn"></button>
+                </div>
+            </div>
+
+            <!-- 앱: 앨범 -->
+            <div id="app-album" class="phone-app">
+                <div class="camera-header">
+                    <button class="back-btn" onclick="goHome()"><i class="fa-solid fa-chevron-left"></i> Home</button>
+                    <span style="margin-left: auto; font-weight:700; padding-right:20px;">Recents</span>
+                </div>
+                <div id="album-grid" class="album-content"></div>
+            </div>
+
+            <!-- 앱: 사진 뷰어 -->
+            <div id="app-photo-viewer" class="phone-app photo-bg-black">
+                <div class="camera-header" style="background: rgba(0,0,0,0.5); position:absolute; top:0; width:100%; z-index:50; color:white; border:none;">
+                    <button class="back-btn" onclick="openApp('album')" style="color:white;"><i class="fa-solid fa-chevron-left"></i> Back</button>
+                </div>
+                <img id="photo-viewer-img" src="" style="width:100%; height:100%; object-fit:contain;">
+            </div>
+
+            <!-- 앱: 메시지 -->
+            <div id="app-messages" class="phone-app">
+                <div class="camera-header">
+                    <button class="back-btn" onclick="goHome()"><i class="fa-solid fa-chevron-left"></i></button>
+                    <div class="msg-header-profile">
+                        <label for="setting-avatar-file">
+                            <img id="msg-contact-avatar" class="msg-avatar" src="" title="Change Avatar">
+                        </label>
+                        <input type="file" id="setting-avatar-file" accept="image/*" style="display:none;">
+                        <span id="msg-contact-name" class="msg-name" title="Rename" onclick="renameContact()">Partner</span>
+                    </div>
+                </div>
+
+                <div id="msg-list" class="msg-list"></div>
+
+                <div class="msg-input-area">
+                    <!-- Textarea로 변경 (멀티라인용) -->
+                    <textarea id="msg-input-text" placeholder="iMessage" rows="1"></textarea>
+                    <button id="msg-send-btn" class="msg-send-btn"><i class="fa-solid fa-arrow-up"></i></button>
+                </div>
+            </div>
+
+            <!-- 앱: 설정 -->
+            <div id="app-settings" class="phone-app" style="background:#f2f2f7;">
+                <div class="camera-header">
+                    <button class="back-btn" onclick="openApp('message-list')"><i class="fa-solid fa-chevron-left"></i> Messages</button>
+
+                    <span style="margin-left:10px; font-weight:800; font-size:20px;">Settings</span>
+                </div>
+                <div class="settings-content">
+
+                    <p class="settings-area-label">DISPLAY</p>
+                    <div class="settings-group">
+                        <div class="settings-row" onclick="toggleTheme()" style="cursor:pointer;">
+                            <span class="settings-label-text">Appearance</span>
+                            <div class="settings-action">
+                                <span id="theme-label-text" style="color:#888; font-size:14px; margin-right:5px;">Dark</span>
+                                <i id="theme-icon" class="fa-solid fa-moon"></i>
+                            </div>
+                        </div>
+                        <div class="settings-row">
+                            <span class="settings-label-text">Set Wallpaper</span>
+                            <label for="setting-wallpaper-file" class="settings-action" style="margin:0;">
+                                Photo <i class="fa-solid fa-chevron-right" style="font-size:12px; margin-left:5px;"></i>
+                            </label>
+                            <input type="file" id="setting-wallpaper-file" accept="image/*" style="display:none;">
+                        </div>
+                        <div class="settings-row" onclick="resetWallpaper()" style="cursor:pointer;">
+                            <span class="settings-label-text" style="color:#ff3b30;">Remove Wallpaper</span>
+                        </div>
+                    </div>
+                <!-- [phone.html] 수정할 부분 -->
+<!-- 아까 추가한 폰트 설정 div를 이걸로 싹 덮어씌워라 -->
+
+                <div class="settings-group">
+                    <div class="settings-row">
+                        <span class="settings-label-text">Custom Font (URL)</span>
+                        <!-- ▼▼▼ 저장 버튼 추가됨 ▼▼▼ -->
+                        <div id="btn-save-custom-font" class="settings-action" style="font-weight:bold;">
+                            <i class="fa-solid fa-floppy-disk"></i> Save
+                        </div>
+                    </div>
+                    <div style="padding: 0 15px 15px 15px;">
+                        <textarea id="setting-custom-font" class="settings-input" rows="1" placeholder="Paste direct link (.ttf/.woff) and click Save" style="border: 1px solid #444;"></textarea>
+                    </div>
+                </div>
+
+<!-- [phone.html] 폰트 설정 박스(settings-group) 닫히는 </div> 바로 밑에 추가 -->
+
+                <!-- ▼▼▼ 구분선 설정 (새로 추가) ▼▼▼ -->
+                <div class="settings-group">
+                    <div class="settings-row">
+                        <span class="settings-label-text">Visual Divider (RP Gap)</span>
+                        <select id="setting-separator-mode" style="background:transparent; color:inherit; border:none; text-align:right; outline:none; font-weight:bold; cursor:pointer;">
+                            <option value="none" style="background:#333;">None</option>
+                            <option value="time" style="background:#333;">Timestamp</option>
+                            <option value="line" style="background:#333;">Line</option>
+                        </select>
+                    </div>
+                </div>
+                <!-- ▲▲▲ 여기까지 ▲▲▲ -->
+
+                <!-- 원래 있던 코드가 이 아래에 있어야 함 (지침 위치용) -->
+                <div class="settings-area-group">
+                    <div class="settings-area-label">SMS AI SETTINGS</div>
+
+                    <p class="settings-area-label">SMS AI SETTINGS</p>
+                    <div class="settings-area-group" style="margin-top:0;">
+                        <textarea id="setting-sms-persona" class="settings-input" rows="4" placeholder="예: 너는 사용자에게 차갑게 대하는 츤데레 여친이야. 단답으로 보내."></textarea>
+                    </div>
+					            <!-- [추가됨] 유저 프로필 설정 -->
+                        <!-- [여기부터 복사하세요: 유저 프로필 섹션 재정렬] -->
+
+            <!-- 1. 유저 외모 태그 (사진용) -->
+            <div class="settings-group">
+                <div class="settings-area-group">
+                    <div class="settings-area-label">Your (User) Visual Tags</div>
+                    <!-- ★중요: id가 setting-user-tags 여야 합니다 -->
+                    <textarea id="setting-user-tags" class="settings-input" style="height:60px;" placeholder="Tags for YOUR selfies (e.g. 1boy, black hair, hoodie)"></textarea>
+                </div>
+            </div>
+
+            <!-- 2. 유저 이름 -->
+            <div class="settings-group">
+                <div class="settings-area-group">
+                    <div class="settings-area-label">Your (User) Name</div>
+                    <!-- ★중요: id가 setting-user-name 이어야 합니다 -->
+                    <textarea id="setting-user-name" class="settings-input" style="height:40px;" placeholder="e.g. Master, Anon"></textarea>
+                </div>
+            </div>
+
+            <!-- 3. 유저 페르소나 (문자 말투용) -->
+            <div class="settings-group">
+                <div class="settings-area-group">
+                    <div class="settings-area-label">Your (User) Persona for SMS</div>
+                    <!-- ★중요: id가 setting-user-persona 여야 합니다 -->
+                    <textarea id="setting-user-persona" class="settings-input" style="height:60px;" placeholder="Your personality in texts (e.g. cold, funny)"></textarea>
+                </div>
+				
+				<!-- [phone.html] setting-user-persona(텍스트박스) 닫는 </div> 또는 </textarea> 바로 밑에 추가 -->
+
+                <!-- ▼▼▼ 유저 설정 고정 체크박스 ▼▼▼ -->
+                <div class="settings-row" style="margin-top:10px; border:none; padding:0;">
+                    <span class="settings-label-text" style="font-size:13px; color:#aaa;">
+                        <input type="checkbox" id="setting-persist-user" style="vertical-align:middle; margin-right:5px;">
+                        Keep User Profile for New Chats
+                    </span>
+                </div>
+                <!-- ▲▲▲ 여기까지 ▲▲▲ -->
+
+				
+				                    <!-- [추가] 채팅 연동 스위치 -->
+                    <div class="settings-group">
+                        <div class="settings-row">
+                            <span class="settings-label-text">Sync Chat "send to" to SMS</span>
+                            <div class="settings-action">
+                                <input type="checkbox" id="setting-chat-to-sms" checked style="transform: scale(1.5);">
+                            </div>
+                        </div>
+                    </div>
+
+				                        <!-- [추가] 맥스 토큰 설정 -->
+                        <div class="settings-row" style="margin-top: 15px;">
+                            <div class="settings-label-text">Max Context (Tokens)</div>
+                            <input type="number" id="setting-max-tokens" class="settings-input" placeholder="2048" style="width: 80px; padding: 10px; text-align: right; background: transparent; border: 1px solid #777; color: var(--ph-text-color);">
+                        </div>
+                        <div class="settings-area-label" style="margin-left:5px; margin-bottom:15px;">Higher = More memory, Slower speed</div>
+
+            </div>
+
+
+					            <!-- SMS 성격(Persona) 밑에 추가하세요 -->
+            <div class="settings-group">
+                <div class="settings-area-group">
+                    <div class="settings-area-label">Prefill (Response Starter)</div>
+                    <textarea id="setting-prefill" class="settings-input" style="height:50px;" placeholder="e.g. (blushes)"></textarea>
+                </div>
+            </div>
+
+
+                    <p class="settings-area-label">CAMERA & IMAGE GEN</p>
+                    <div class="settings-area-group" style="margin-top:0;">
+                        <textarea id="setting-system-prompt" class="settings-input" rows="4" placeholder="Image Gen System Prompt"></textarea>
+                    </div>
+   <!-- ▼▼▼ 클라우드 연락처 삭제 버튼 (저주풀기) ▼▼▼ -->
+                <div class="settings-group" style="margin-top: 10px; border: 1px solid #ff3b30;">
+                     <div class="settings-row" id="btn-nuke-saved-contacts" style="justify-content:center; cursor:pointer;">
+                        <span style="color:#ff3b30; font-weight:bold;">
+                            <i class="fa-solid fa-trash-can"></i> Delete All Cloud Contacts
+                        </span>
+                    </div>
+                </div>
+                <!-- ▲▲▲ 여기까지 ▲▲▲ -->
+                    <div class="settings-group" style="margin-top:40px; margin-bottom: 50px;">
+                        <div class="settings-row" onclick="resetPhoneData()" style="justify-content:center; cursor:pointer;">
+                            <span class="settings-label-text" style="color:#ff3b30; font-weight:600;">Reset All Data</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="phone-home-indicator" onclick="goHome()"></div>
+        </div>
+    </div>
+<!-- 1. 연락처 목록 앱 -->
+<div id="app-contacts" class="phone-app">
+    <div class="camera-header">
+        <button class="back-btn" onclick="goHome()"><i class="fa-solid fa-chevron-left"></i> Home</button>
+        <span style="flex:1; text-align:center;">Contacts</span>
+        <div style="width:50px;"></div>
+    </div>
+    <div class="contact-list" id="contact-list-container">
+        <!-- 자바스크립트로 목록이 여기 채워짐 -->
+    </div>
+    <button class="fab-add" onclick="openContactEdit()">+</button>
+</div>
+
+<!-- 2. 연락처 추가/편집 화면 -->
+<div id="app-contact-edit" class="phone-app">
+    <div class="camera-header">
+        <button class="back-btn" onclick="openApp('contacts')">Cancel</button>
+        <span style="flex:1; text-align:center;">Edit Contact</span>
+        <button class="back-btn" onclick="deleteContact()" style="color:#ff3b30; font-size:14px;">Delete</button>
+    </div>
+    <div style="padding: 20px; overflow-y: auto; height: calc(100% - 94px);">
+        <!-- 아바타 업로드 -->
+        <div style="text-align:center; margin-bottom:20px;">
+            <img id="edit-avatar-preview" src="" style="width:80px; height:80px; border-radius:50%; background:#333; object-fit:cover;">
+            <br>
+            <label for="edit-avatar-input" style="color:#0a84ff; font-size:14px; cursor:pointer;">Set Photo</label>
+            <input type="file" id="edit-avatar-input" accept="image/*" style="display:none;">
+        </div>    <div class="edit-form-group">
+		<!-- ▼▼▼ 연락처 고정 체크박스 ▼▼▼ -->
+            <div style="margin-bottom:15px; display:flex; align-items:center;">
+                <input type="checkbox" id="edit-is-global" style="width:20px; height:20px; margin-right:10px;">
+                <label for="edit-is-global" style="color:#fff; font-size:14px;">Keep Global (Initial Contact)</label>
+            </div>
+            <!-- ▲▲▲ 여기까지 ▲▲▲ -->
+        <label class="edit-label">Name</label>
+        <input type="text" id="edit-name" class="edit-input" placeholder="e.g. Girlfriend">
+    </div>
+
+    <!-- 핵심 기능 1: 성격 -->
+    <div class="edit-form-group">
+        <label class="edit-label">Personality (SMS Context)</label>
+        <textarea id="edit-persona" class="edit-textarea" placeholder="She is cute, uses emojis often..."></textarea>
+    </div>
+
+    <!-- 핵심 기능 2: 외모 태그 -->
+    <div class="edit-form-group">
+        <label class="edit-label">Visual Tags (for Selfie)</label>
+        <textarea id="edit-tags" class="edit-textarea" placeholder="1girl, pink hair, blue eyes, cute face..."></textarea>
+    </div>
+
+    <button class="edit-btn-save" onclick="saveContact()">Save</button>
+</div>
+</div>
+    <!-- 4. 채팅 목록 화면 (새로 추가됨) -->
+    <div id="app-message-list" class="phone-app">
+        <div class="camera-header">
+            <button class="back-btn" onclick="goHome()"><i class="fa-solid fa-chevron-left"></i> Home</button>
+            <span style="flex:1; text-align:center;">Messages</span>
+            <button class="back-btn" onclick="openApp('contacts')" style="color:#0a84ff; font-size:20px;">
+                <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+        </div>
+        <div id="message-thread-list" style="padding: 10px; overflow-y: auto; height: calc(100% - 94px);">
+            <!-- 여기에 자바스크립트로 채팅방 목록이 생깁니다 -->
+        </div>
+    </div>
+    <!-- ▼▼▼ [전화 통화 화면] st-phone-overlay 닫히기 직전에 붙여넣으세요 ▼▼▼ -->
+    <div id="app-calling" class="phone-app">
+        <div class="call-interface">
+            <div class="call-info">
+                <img id="call-avatar" class="call-avatar" src="">
+                <div id="call-status" class="call-status">Dialing...</div>
+                <div id="call-name" class="call-name">Unknown</div>
+            </div>
+
+            <!-- AI 대사가 나오는 부분 -->
+            <div id="call-message-area" class="call-message-area" style="display:none;"></div>
+            <!-- ▼▼▼ [새로 추가] 통화 중 내 대사 입력창 (평소엔 숨김) ▼▼▼ -->
+            <div id="call-user-input-area" style="display:none; width:100%; margin-top:10px;">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="call-input-text" placeholder="Speak..."
+                           style="flex:1; padding:12px; border-radius:20px; border:none; outline:none; background:rgba(255,255,255,0.2); color:white; backdrop-filter:blur(5px);">
+                    <!-- 버튼 스타일 맨 끝에 display:none; 을 추가했습니다 -->
+<button id="call-send-btn" style="width:45px; height:45px; border-radius:50%; border:none; background:#0a84ff; color:white; cursor:pointer; display:none;">
+    <i class="fa-solid fa-paper-plane"></i>
+</button>
+
+                </div>
+            </div>
+            <!-- ▲▲▲ [여기까지 추가] ▲▲▲ -->
+
+            <div class="call-actions">
+                <button id="btn-end-call" class="btn-end-call" onclick="forceEndCall()">
+    <i class="fa-solid fa-phone-slash"></i>
+</button>
+
+            </div>
+        </div>
+    </div>
+    <!-- ▲▲▲ [여기까지] ▲▲▲ -->
+    <!-- ▼▼▼ [새로 추가] 전화 메인 앱 (최근기록 + 연락처 탭) ▼▼▼ -->
+    <div id="app-phone-main" class="phone-app">
+        <!-- 상단 헤더 -->
+        <div class="camera-header">
+            <button class="back-btn" onclick="goHome()">
+                <i class="fa-solid fa-chevron-left"></i> Home
+            </button>
+            <span id="phone-header-title" style="margin-left:auto; margin-right:auto; font-weight:bold;">Recents</span>
+            <div style="width:50px;"></div>
+        </div>
+
+        <!-- 탭 1: 최근 통화 기록 목록 -->
+        <div id="phone-tab-recents" class="phone-tab-content">
+            <div id="phone-recents-list" style="padding:0 15px;"></div>
+        </div>
+
+        <!-- 탭 2: 연락처 목록 (전화 걸기용) -->
+        <div id="phone-tab-contacts" class="phone-tab-content" style="display:none;">
+            <div id="phone-contacts-list" style="padding:10px 15px;"></div>
+        </div>
+
+        <!-- 하단 탭 바 -->
+        <div class="phone-bottom-nav">
+            <div id="tab-btn-recents" class="phone-nav-item active" onclick="switchPhoneTab('recents')">
+                <i class="fa-solid fa-clock"></i>
+                <span>Recents</span>
+            </div>
+            <div id="tab-btn-contacts" class="phone-nav-item" onclick="switchPhoneTab('contacts')">
+                <i class="fa-solid fa-user-group"></i>
+                <span>Contacts</span>
+            </div>
+        </div>
+    </div>
+	
+	    <!-- ▼▼▼ [새로 추가] 음성 메모(통화 녹음) 뷰어 ▼▼▼ -->
+    <div id="app-voice-memo" class="phone-app">
+        <!-- 헤더 -->
+        <div class="camera-header" style="height:60px; padding:10px 15px; display:flex; flex-direction:column; justify-content:center;">
+            <button class="back-btn" onclick="openApp('phone')">
+                <i class="fa-solid fa-chevron-left"></i> Recordings
+            </button>
+        </div>
+
+        <!-- 내용물: 카세트테이프 같은 느낌 -->
+        <div style="padding:20px; text-align:center;">
+            <i class="fa-solid fa-tape" style="font-size:40px; color:#ff9500; margin-bottom:10px;"></i>
+            <h3 id="memo-title" style="margin:0; font-size:18px;">Contact Name</h3>
+            <p id="memo-date" style="color:#888; font-size:12px;">Jan 1, 12:00 PM</p>
+        </div>
+
+        <!-- 대화 스크립트가 들어갈 곳 -->
+        <div id="memo-content" style="flex:1; overflow-y:auto; padding:15px; background:rgba(128,128,128,0.1); margin:0 15px 30px 15px; border-radius:15px; font-size:14px; line-height:1.6;">
+            <!-- 여기에 대화 내용이 들어옵니다 -->
+        </div>
+    </div>
+    <!-- ▲▲▲ [여기까지] ▲▲▲ -->
+
+    <!-- ▲▲▲ [여기까지] ▲▲▲ -->
+
+</div>
